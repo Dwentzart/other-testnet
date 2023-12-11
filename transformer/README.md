@@ -9,7 +9,7 @@ apt install unzip
 wget https://fastcdn.uscloudmedia.com/transformers/formal/tfs_v0.33.1_92c26db_testnet.zip
 ```
 ```
-unzip https://fastcdn.uscloudmedia.com/transformers/formal/tfs_v0.33.1_92c26db_testnet.zip
+unzip tfs_v0.33.1_92c26db_testnet.zip
 ```
 ```
 chmod +x tfs_v0.33.1_92c26db_testnet
