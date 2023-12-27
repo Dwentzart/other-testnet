@@ -1,5 +1,4 @@
-How to ?
-
+## How to generate wallet?
 ### Install dependencies
 ```
 sudo apt update && sudo apt list --upgradable && sudo apt upgrade -y
