@@ -16,22 +16,25 @@ chmod +x ./tanssi-node
 ```
 ### Create tanssi-data
 ```
-adduser tanssi_service --system --no-create-home
+mkdir -p tanssi
 ```
 ```
-mkdir /var/lib/tanssi-data
+mkdir -p /root/tanssi/data/relay
 ```
 ```
-sudo chown -R tanssi_service /var/lib/tanssi-data
+mkdir -p /root/tanssi/data/para
 ```
 ```
-mv ./tanssi-node /var/lib/tanssi-data
+mkdir -p /root/tanssi/data/container
+```
+```
+mv tanssi-node /root/tanssi/
 ```
 ### Create the Systemd Service Configuration File
 
 (Replace `dwentz` to your nodename) Creat tansi.service & save file
 ```
-sudo tee /etc/systemd/system/tansi.service > /dev/null <<EOF
+sudo tee /etc/systemd/system/tanssi.service > /dev/null <<EOF
 [Unit]
 Description="Tanssi systemd service"
 After=network.target
@@ -45,30 +48,24 @@ User=tanssi_service
 SyslogIdentifier=tanssi
 SyslogFacility=local7
 KillSignal=SIGHUP
-ExecStart=/var/lib/tanssi-data/tanssi-node \
+ExecStart=/root/tanssi/tanssi-node \
 --chain=dancebox \
---port=30377 \
---rpc-port=9977 \
---name=dwentz \
---base-path=/var/lib/tanssi-data/para \
+--name=dwentz-tansi \
+--base-path=/root/tanssi/data/para \
 --state-pruning=2000 \
 --blocks-pruning=2000 \
 --collator \
 --database paritydb \
 --telemetry-url='wss://telemetry.polkadot.io/submit/ 0'
 -- \
---rpc-port=9978 \
---port=30378 \
---name=tanssi-appchain \
---base-path=/var/lib/tanssi-data/container \
+--name=dwentz-appchain \
+--base-path=/root/tanssi/data/container \
 --telemetry-url='wss://telemetry.polkadot.io/submit/ 0'
 -- \
---name=dwentz \
+--name=dwentz-relayer \
 --chain=westend_moonbase_relay_testnet \
---rpc-port=9979 \
---port=30379 \
 --sync=fast \
---base-path=/var/lib/tanssi-data/relay \
+--base-path=/root/tanssi/data/relay \
 --state-pruning=2000 \
 --blocks-pruning=2000 \
 --database paritydb \
@@ -80,17 +77,17 @@ EOF
 ```
 ### Run Node
 ```
-systemctl enable tansi.service
+systemctl enable tanssi.service
 ```
 ```
 systemctl daemon-reload
 ```
 ```
-systemctl restart tansi.service && journalctl -f -u tansi.service
+systemctl restart tanssi.service && journalctl -f -u tanssi.service
 ```
 ### Generate session keys
 ```
-curl http://127.0.0.1:9979 -H \
+curl http://127.0.0.1:9944 -H \
 "Content-Type:application/json;charset=utf-8" -d \
   '{
     "jsonrpc":"2.0",
